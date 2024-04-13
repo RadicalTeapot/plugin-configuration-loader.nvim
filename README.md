@@ -1,4 +1,4 @@
-# Plugin loader for lazy nvim
+# Plugin configuration loader for lazy nvim
 
 My solution to share plugin configuration across multiple [lazy.nvim](https://github.com/folke/lazy.nvim) installation.
 
@@ -11,13 +11,13 @@ My solution to share plugin configuration across multiple [lazy.nvim](https://gi
 You can add the following Lua code to your `init.lua` to bootstrap the plugin loader:
 
 ```lua
-local plugin_loader_path = vim.fn.stdpath("data") .. "/plugin-loader/plugin-loader"
+local plugin_config_loader_path = vim.fn.stdpath("data") .. "/plugin-configuration-loader/plugin-configuration-loader"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
     vim.fn.system({
         "git",
         "clone",
-        "https://github.com/RadicalTeapot/plugin-loader.nvim.git",
-        plugin_loader_path,
+        "https://github.com/RadicalTeapot/plugin-configuration-loader.nvim.git",
+        plugin_config_loader_path,
     })
 end
 vim.opt.rtp:prepend(plugin_loader_path)
@@ -26,18 +26,37 @@ vim.opt.rtp:prepend(plugin_loader_path)
 Next step is to get plugin configurations below the code added in the prior step in `init.lua`:
 
 ```lua
-local plugins = require("plugin-loader").get_plugin_configs({path, suffix, plugin_list_file, plugins})
+local plugins = require("plugin-configuration-loader").get_plugin_configurations(opts)
 ```
 
-- **path**: (`string`) Absolute path to the lua module folder where the plugin configurations are located
-- **suffix**: (`string`) Name of suffix to use when loading plugin overrides (**optional**)
-- **pluin_list_file**: (`string`) Absolute path to a lua file returning a table of plugins to load (**optional**)
-- **plugins**: (`table`) List of plugins to load (merged with the list obtained from the plugin list file (**optional**))
+- **opts** is a optional table with the following values:
+  - **path**: (`string`) Absolute path to the lua module folder where the plugin configurations are located.
+  - **suffix**: (`table`)
+    - **override**: (`string`) Name of suffix to use when loading plugin overrides.
+    - **fallback**: (`string`) Name of suffix to use when loading an override fails.
+  - **pluin_list_module**: (`string`|`nil`) Lua module returning a table of plugins to load, nil if not used.
+  - **plugins**: (`table`) List of plugins to load (merged with the list obtained from the plugin list file.
+  - **debug**: (`boolean`) True to print debug messages
 
 Finally pass the result to lazy.nvim
 
 ```lua
 require("lazy").setup(plugins, {})
+```
+
+The default options passed to `get_plugin_configurations` are:
+
+```lua
+{
+    path = vim.fs.normalize("~/.plugin-configuration-loader"),
+    suffix = {
+        override = vim.fn.expand("$NVIM_APPNAME"),
+        fallback = "default",
+    },
+    plugin_list_module = vim.fn.expand("plugin_list.$NVIM_APPNAME"),
+    plugins = {},
+    debug = false,
+}
 ```
 
 ## Plugin configuration
