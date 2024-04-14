@@ -7,7 +7,10 @@ M.default = {
         override = vim.fn.expand("$NVIM_APPNAME"),
         fallback = "default",
     },
-    plugin_list_module = vim.fn.expand("plugin_list.$NVIM_APPNAME"),
+    ---@type function|string
+    plugin_list_module = function(suffix)
+        return "plugin-lists." .. suffix
+    end,
     plugins = {},
     debug = false,
 }
@@ -67,11 +70,13 @@ end
 local get_plugin_list = function(plugin_list_file, plugins)
     local plugin_list = {}
 
-    if plugin_list_file ~= nil then
+    if plugin_list_file ~= nil and plugin_list_file ~= "" then
         local ok, result = pcall(require, plugin_list_file)
         if ok then
             assert(type(result) == "table", "opts.plugin_list_module return type must be a table")
             plugin_list = vim.tbl_extend("force", plugin_list, result)
+        else
+            vim.notify("Could not load plugin list " .. plugin_list_file, vim.log.levels.WARN)
         end
     end
 
@@ -93,7 +98,15 @@ M.get_plugin_configurations = function(opts)
     assert(type(merged_opts.path) == "string", "path must be a string")
     vim.opt.rtp:prepend(merged_opts.path)
 
-    local plugins = get_plugin_list(merged_opts.plugin_list_module, merged_opts.plugins)
+    -- Get plugin list
+    local plugin_list_module = ""
+    if type(merged_opts.plugin_list_module) == "function" then
+        plugin_list_module = merged_opts.plugin_list_module(merged_opts.suffix.override)
+    elseif type(merged_opts.plugin_list_module) == "string" then
+        plugin_list_module = merged_opts.plugin_list_module --[[@as string]]
+    end
+    local plugins = get_plugin_list(plugin_list_module, merged_opts.plugins)
+
     local configs = {}
     for _, p in ipairs(plugins) do
         local plugin_config_opts = {

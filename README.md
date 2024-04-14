@@ -34,7 +34,7 @@ local plugins = require("plugin-configuration-loader").get_plugin_configurations
   - **suffix**: (`table`)
     - **override**: (`string`) Name of suffix to use when loading plugin overrides.
     - **fallback**: (`string`) Name of suffix to use when loading an override fails.
-  - **pluin_list_module**: (`string`|`nil`) Lua module returning a table of plugins to load, nil if not used.
+  - **pluin_list_module**: (`string`|`function`) Either Lua module name as string or a function returning a string (or nil). Path to a lua module returning a table of plugins to load, set to nil to skip using a list.
   - **plugins**: (`table`) List of plugins to load (merged with the list obtained from the plugin list file.
   - **debug**: (`boolean`) True to print debug messages
 
@@ -53,7 +53,7 @@ The default options passed to `get_plugin_configurations` are:
         override = vim.fn.expand("$NVIM_APPNAME"),
         fallback = "default",
     },
-    plugin_list_module = vim.fn.expand("plugin_list.$NVIM_APPNAME"),
+    plugin_list_module = "plugin_list."..suffix.override
     plugins = {},
     debug = false,
 }
