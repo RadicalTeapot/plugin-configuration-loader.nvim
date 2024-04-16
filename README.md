@@ -92,6 +92,18 @@ Merging of the configurations is done following this pattern:
   - Merge and override its content with the current plugin configuration
   - Otherwise merge and override with the `default.lua` content if it exists
 
+### Plugin list
+
+A simple lua file that returns the module paths of plugins to load, for example, using the folder structure above:
+
+```lua
+return {
+    "plugin_name",
+    "other_plugin",
+    "subfolder.deeper_plugin",
+}
+```
+
 ### Plugin configuration override
 
 Content of the lua files are similar to what lazy.nvim expects, for example an `init.lua` file might contain:
@@ -155,6 +167,12 @@ return {
 
 > [!TIP]
 > Any and all entries in the returned table can be overriden by suffix configurations.
+
+## To do
+
+- [ ] Accept either strings or tables for `plugin-list` / `plugin`. In case of a table, the first element should be the module name and second element should be the suffix override (e.g. `{"plugin.name", suffix = {override = "something"}}`).
+- [ ] Check for plugin update when starting Neovim (can be muted or disabled in opts)
+- [ ] Add a command to update the plugin (i.e. do a git pull on the repo folder)
 
 ## Mentions and inspiration
 
