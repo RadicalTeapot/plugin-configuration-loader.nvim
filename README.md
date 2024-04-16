@@ -11,8 +11,9 @@ My solution to share plugin configuration across multiple [lazy.nvim](https://gi
 You can add the following Lua code to your `init.lua` to bootstrap the plugin loader:
 
 ```lua
-local plugin_config_loader_path = vim.fn.stdpath("data") .. "/plugin-configuration-loader/plugin-configuration-loader"
-if not (vim.uv or vim.loop).fs_stat(lazypath) then
+-- Install plugin configuration loader in config data folder
+local plugin_config_loader_path = vim.fn.stdpath("data") .. "/plugin-configuration-loader/plugin-configuration-loader.nvim"
+if not (vim.uv or vim.loop).fs_stat(plugin_config_loader_path) then
     vim.fn.system({
         "git",
         "clone",
@@ -20,7 +21,9 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
         plugin_config_loader_path,
     })
 end
-vim.opt.rtp:prepend(plugin_loader_path)
+
+-- Prepend plugin configuration loader to path
+vim.opt.rtp:prepend(plugin_config_loader_path)
 ```
 
 Next step is to get plugin configurations below the code added in the prior step in `init.lua`:
