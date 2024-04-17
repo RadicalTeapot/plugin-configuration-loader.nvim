@@ -13,6 +13,7 @@ M.default = {
     end,
     plugins = {},
     debug = false,
+    clear_rtp = false,
 }
 
 --- Get module path with appended suffixes
@@ -119,7 +120,9 @@ M.get_plugin_configurations = function(opts)
     end
 
     -- Restore runtime path
-    vim.opt.rtp = rtp
+    if merged_opts.clear_rtp then
+        vim.opt.rtp = rtp
+    end
 
     return configs
 end

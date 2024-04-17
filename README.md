@@ -40,6 +40,7 @@ local plugins = require("plugin-configuration-loader").get_plugin_configurations
   - **plugin_list_module**: (`string`|`function`) Either Lua module name as string or a function returning a string (or nil). Path to a lua module returning a table of plugins to load, set to nil to skip using a list.
   - **plugins**: (`table`) List of plugins to load (merged with the list obtained from the plugin list file.
   - **debug**: (`boolean`) True to print debug messages
+  - **clear_rtp**: (boolean) True to restore runtimepath after `get_plugin_configurations` is done
 
 Finally pass the result to lazy.nvim
 
@@ -59,6 +60,7 @@ The default options passed to `get_plugin_configurations` are:
     plugin_list_module = "plugin-lists."..suffix.override
     plugins = {},
     debug = false,
+    clear_rtp = false,
 }
 ```
 
