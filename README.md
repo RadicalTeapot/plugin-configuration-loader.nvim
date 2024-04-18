@@ -172,9 +172,11 @@ return {
 
 ## To do
 
+- [ ] Report errors while trying to load plugins
 - [ ] Accept either strings or tables for `plugin-list` / `plugin`. In case of a table, the first element should be the module name and second element should be the suffix override (e.g. `{"plugin.name", suffix = {override = "something"}}`).
 - [ ] Check for plugin update when starting Neovim (can be muted or disabled in opts)
 - [ ] Add a command to update the plugin (i.e. do a git pull on the repo folder)
+- [ ] Add option to clear `package.loaded`
 
 ## Mentions and inspiration
 
